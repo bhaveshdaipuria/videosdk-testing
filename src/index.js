@@ -1,11 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
+import ReactDOM from "react-dom/client";
 import App from "./App";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; // Ensure you import the toastify styles
+import "./index.css";
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
   <>
     <ToastContainer
       toastClassName={() =>
@@ -26,5 +27,4 @@ ReactDOM.render(
     />
     <App />
   </>,
-  document.getElementById("root")
 );
