@@ -37,6 +37,7 @@ import { sideBarModes } from "../../utils/common";
 import ECommerceIcon from "../../icons/Bottombar/ECommerceIcon";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import { useMeetingAppContext } from "../../MeetingAppContextDef";
+import { getToken, destroyMeetingRoom } from "../../api";
 
 export function ILSBottomBar({
 	bottomBarHeight,
@@ -71,67 +72,67 @@ export function ILSBottomBar({
 		);
 	};
 
-	const RecordingBTN = () => {
-		const { startRecording, stopRecording, recordingState } = useMeeting();
-		const defaultOptions = {
-			loop: true,
-			autoplay: true,
-			animationData: recordingBlink,
-			rendererSettings: {
-				preserveAspectRatio: "xMidYMid slice",
-			},
-			height: 64,
-			width: 160,
-		};
-
-		const isRecording = useIsRecording();
-		const isRecordingRef = useRef(isRecording);
-
-		useEffect(() => {
-			isRecordingRef.current = isRecording;
-		}, [isRecording]);
-
-		const { isRequestProcessing } = useMemo(
-			() => ({
-				isRequestProcessing:
-					recordingState === Constants.recordingEvents.RECORDING_STARTING ||
-					recordingState === Constants.recordingEvents.RECORDING_STOPPING,
-			}),
-			[recordingState],
-		);
-
-		const _handleClick = () => {
-			const isRecording = isRecordingRef.current;
-
-			if (isRecording) {
-				stopRecording();
-			} else {
-				startRecording();
-			}
-		};
-
-		return (
-			<OutlinedButton
-				Icon={RecordingIcon}
-				onClick={_handleClick}
-				isFocused={isRecording}
-				tooltip={
-					recordingState === Constants.recordingEvents.RECORDING_STARTED
-						? "Stop Recording"
-						: recordingState === Constants.recordingEvents.RECORDING_STARTING
-							? "Starting Recording"
-							: recordingState === Constants.recordingEvents.RECORDING_STOPPED
-								? "Start Recording"
-								: recordingState ===
-									Constants.recordingEvents.RECORDING_STOPPING
-									? "Stopping Recording"
-									: "Start Recording"
-				}
-				lottieOption={isRecording ? defaultOptions : null}
-				isRequestProcessing={isRequestProcessing}
-			/>
-		);
-	};
+	// const RecordingBTN = () => {
+	// 	const { startRecording, stopRecording, recordingState } = useMeeting();
+	// 	const defaultOptions = {
+	// 		loop: true,
+	// 		autoplay: true,
+	// 		animationData: recordingBlink,
+	// 		rendererSettings: {
+	// 			preserveAspectRatio: "xMidYMid slice",
+	// 		},
+	// 		height: 64,
+	// 		width: 160,
+	// 	};
+	//
+	// 	const isRecording = useIsRecording();
+	// 	const isRecordingRef = useRef(isRecording);
+	//
+	// 	useEffect(() => {
+	// 		isRecordingRef.current = isRecording;
+	// 	}, [isRecording]);
+	//
+	// 	const { isRequestProcessing } = useMemo(
+	// 		() => ({
+	// 			isRequestProcessing:
+	// 				recordingState === Constants.recordingEvents.RECORDING_STARTING ||
+	// 				recordingState === Constants.recordingEvents.RECORDING_STOPPING,
+	// 		}),
+	// 		[recordingState],
+	// 	);
+	//
+	// 	const _handleClick = () => {
+	// 		const isRecording = isRecordingRef.current;
+	//
+	// 		if (isRecording) {
+	// 			stopRecording();
+	// 		} else {
+	// 			startRecording();
+	// 		}
+	// 	};
+	//
+	// 	return (
+	// 		<OutlinedButton
+	// 			Icon={RecordingIcon}
+	// 			onClick={_handleClick}
+	// 			isFocused={isRecording}
+	// 			tooltip={
+	// 				recordingState === Constants.recordingEvents.RECORDING_STARTED
+	// 					? "Stop Recording"
+	// 					: recordingState === Constants.recordingEvents.RECORDING_STARTING
+	// 						? "Starting Recording"
+	// 						: recordingState === Constants.recordingEvents.RECORDING_STOPPED
+	// 							? "Start Recording"
+	// 							: recordingState ===
+	// 								Constants.recordingEvents.RECORDING_STOPPING
+	// 								? "Stopping Recording"
+	// 								: "Start Recording"
+	// 			}
+	// 			lottieOption={isRecording ? defaultOptions : null}
+	// 			isRequestProcessing={isRequestProcessing}
+	// 		/>
+	// 	);
+	// };
 
 	const MicBTN = () => {
 		const mMeeting = useMeeting();
@@ -477,14 +478,31 @@ export function ILSBottomBar({
 		const onParticipantLeft = () => {
 			console.log("A participant left the meeting");
 		};
-		const { leave } = useMeeting({ onMeetingLeft, onParticipantLeft });
+
+		const { leave, participants, end } = useMeeting({
+			onMeetingLeft,
+			onParticipantLeft,
+		});
+
+		const people = [...participants.values()];
+
+		console.log(people.length);
 
 		return (
 			<OutlinedButton
 				Icon={EndIcon}
 				bgColor="bg-red-150"
-				onClick={() => {
-					leave();
+				onClick={async () => {
+					if (people > 1) {
+						leave();
+					} else {
+						console.log("This was the last person");
+						const newToken = await getToken();
+						const roomId = sessionStorage.getItem("roomId");
+						await destroyMeetingRoom(newToken, roomId);
+						end();
+					}
+					sessionStorage.removeItem("roomId");
 					setIsMeetingLeft(true);
 				}}
 				tooltip="Leave Meeting"
@@ -884,7 +902,7 @@ export function ILSBottomBar({
 				<>
 					<MicBTN />
 					<WebCamBTN />
-					<RecordingBTN />
+					{/* <RecordingBTN /> */}
 				</>
 			)}
 			<OutlinedButton Icon={AdjustmentsVerticalIcon} onClick={handleClickFAB} />
@@ -950,8 +968,6 @@ export function ILSBottomBar({
 																isMobile={isMobile}
 																isTab={isTab}
 															/>
-														) : icon === BottomBarButtonTypes.HLS ? (
-															<HLSBTN isMobile={isMobile} isTab={isTab} />
 														) : icon === BottomBarButtonTypes.POLL ? (
 															<PollBTN isMobile={isMobile} isTab={isTab} />
 														) : icon === BottomBarButtonTypes.REACTION &&

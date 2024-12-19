@@ -155,14 +155,13 @@ export function JoiningScreen({
         const audioConstraints = {
           audio: true,
         };
-  
-        const stream = await navigator.mediaDevices.getUserMedia(
-          audioConstraints
-        );
+
+        const stream =
+          await navigator.mediaDevices.getUserMedia(audioConstraints);
         const audioTracks = stream.getAudioTracks();
-  
+
         const audioTrack = audioTracks.length ? audioTracks[0] : null;
-  
+
         setAudioTrack(audioTrack);
         if (firstTime) {
           setSelectedMic({
@@ -172,7 +171,6 @@ export function JoiningScreen({
       } catch (error) {
         console.log("Failed to access microphone", error);
       }
-     
     }
 
     if (webcam) {
@@ -183,9 +181,8 @@ export function JoiningScreen({
         },
       };
 
-      const stream = await navigator.mediaDevices.getUserMedia(
-        videoConstraints
-      );
+      const stream =
+        await navigator.mediaDevices.getUserMedia(videoConstraints);
       const videoTracks = stream.getVideoTracks();
 
       const videoTrack = videoTracks.length ? videoTracks[0] : null;
@@ -483,6 +480,7 @@ export function JoiningScreen({
                       if (valid) {
                         setToken(token);
                         setMeetingId(id);
+                        sessionStorage.setItem("roomId", id);
                         if (videoTrack) {
                           videoTrack.stop();
                           setVideoTrack(null);
@@ -494,6 +492,7 @@ export function JoiningScreen({
                     _handleOnCreateMeeting={async () => {
                       const token = await getToken();
                       const _meetingId = await createMeeting({ token });
+                      sessionStorage.setItem("roomId", _meetingId);
                       setToken(token);
                       setMeetingId(_meetingId);
                       setParticipantName("");

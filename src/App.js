@@ -14,7 +14,7 @@ const App = () => {
   const [selectedMic, setSelectedMic] = useState({ id: null });
   const [selectedWebcam, setSelectedWebcam] = useState({ id: null });
   const [selectWebcamDeviceId, setSelectWebcamDeviceId] = useState(
-    selectedWebcam.id
+    selectedWebcam.id,
   );
   const [meetingMode, setMeetingMode] = useState(Constants.modes.CONFERENCE);
   const [selectMicDeviceId, setSelectMicDeviceId] = useState(selectedMic.id);
@@ -22,7 +22,7 @@ const App = () => {
   const [isMeetingLeft, setIsMeetingLeft] = useState(false);
 
   const isMobile = window.matchMedia(
-    "only screen and (max-width: 768px)"
+    "only screen and (max-width: 768px)",
   ).matches;
 
   useEffect(() => {
