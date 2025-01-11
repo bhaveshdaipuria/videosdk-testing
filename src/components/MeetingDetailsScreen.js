@@ -12,13 +12,13 @@ export function MeetingDetailsScreen({
   onClickStartMeeting,
   setMeetingMode,
   meetingMode,
-  isLoader,
 }) {
   const [studioCode, setStudioCode] = useState("");
   const [studioCodeError, setStudioCodeError] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [iscreateMeetingClicked, setIscreateMeetingClicked] = useState(false);
   const [isJoinMeetingClicked, setIsJoinMeetingClicked] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   return (
     <div
@@ -103,15 +103,21 @@ export function MeetingDetailsScreen({
         <div className="w-full md:mt-0 mt-4 flex flex-col">
           <div className="flex items-center justify-center flex-col w-full">
             <button
+              disabled={loader}
               className="w-full bg-purple-350 text-white px-2 py-3 rounded-xl"
               onClick={async (e) => {
+                setLoader(true);
                 const studioCode = await _handleOnCreateMeeting();
+                console.log(studioCode);
                 setStudioCode(studioCode);
+                if (studioCode.length > 0 || studioCodeError) {
+                  setLoader(false);
+                }
                 setIscreateMeetingClicked(true);
                 setMeetingMode(Constants.modes.CONFERENCE);
               }}
             >
-              {isLoader ? "Creating Meeting..." : "Create a Meeting"}
+              {loader ? "Creating Meeting..." : "Create a Meeting"}
             </button>
 
             <button

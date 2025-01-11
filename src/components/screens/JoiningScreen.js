@@ -35,7 +35,6 @@ export function JoiningScreen({
   });
 
   const [videoTrack, setVideoTrack] = useState(null);
-  const [loader, setLoader] = useState(false);
 
   const [dlgMuted, setDlgMuted] = useState(false);
   const [dlgDevices, setDlgDevices] = useState(false);
@@ -469,7 +468,6 @@ export function JoiningScreen({
                     videoTrack={videoTrack}
                     setVideoTrack={setVideoTrack}
                     setMeetingMode={setMeetingMode}
-                    isLoader={loader}
                     meetingMode={meetingMode}
                     onClickStartMeeting={onClickStartMeeting}
                     onClickJoin={async (id) => {
@@ -492,13 +490,11 @@ export function JoiningScreen({
                       } else alert("Invalid Meeting Id");
                     }}
                     _handleOnCreateMeeting={async () => {
-                      setLoader(true);
                       const token = await getToken();
                       const _meetingId = await createMeeting({ token });
                       sessionStorage.setItem("roomId", _meetingId);
                       setToken(token);
                       setMeetingId(_meetingId);
-                      setLoader(false);
                       setParticipantName("");
                       return _meetingId;
                     }}
