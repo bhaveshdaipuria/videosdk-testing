@@ -6,7 +6,9 @@ export function MeetingDetailsScreen({
   onClickJoin,
   _handleOnCreateMeeting,
   participantName,
+  participantEmail,
   setParticipantName,
+  setParticipantEmail,
   videoTrack,
   setVideoTrack,
   onClickStartMeeting,
@@ -19,6 +21,10 @@ export function MeetingDetailsScreen({
   const [iscreateMeetingClicked, setIscreateMeetingClicked] = useState(false);
   const [isJoinMeetingClicked, setIsJoinMeetingClicked] = useState(false);
   const [loader, setLoader] = useState(false);
+
+  const emailRegex = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   return (
     <div
@@ -70,8 +76,16 @@ export function MeetingDetailsScreen({
             placeholder="Enter your name"
             className="px-4 py-3 mt-5 bg-gray-650 rounded-xl text-white w-full text-center"
           />
+          <input
+            value={participantEmail}
+            onChange={(e) => setParticipantEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="px-4 py-3 mt-5 bg-gray-650 rounded-xl text-white w-full text-center"
+          />
           <button
-            disabled={participantName.length < 3}
+            disabled={
+              participantName.length < 3 || !emailRegex(participantEmail)
+            }
             className={`w-full ${
               participantName.length < 3 ? "bg-gray-650" : "bg-purple-350"
             }  text-white px-2 py-3 rounded-xl mt-5`}
@@ -83,7 +97,10 @@ export function MeetingDetailsScreen({
                 }
                 onClickStartMeeting();
               } else {
-                if (studioCode.match("\\w{4}\\-\\w{4}\\-\\w{4}")) {
+                if (
+                  studioCode.match("\\w{4}\\-\\w{4}\\-\\w{4}") &&
+                  emailRegex(participantEmail)
+                ) {
                   onClickJoin(studioCode);
                 } else setStudioCodeError(true);
               }

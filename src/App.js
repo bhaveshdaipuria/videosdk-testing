@@ -9,6 +9,7 @@ const App = () => {
   const [token, setToken] = useState("");
   const [meetingId, setMeetingId] = useState("");
   const [participantName, setParticipantName] = useState("");
+  const [participantEmail, setParticipantEmail] = useState("");
   const [micOn, setMicOn] = useState(true);
   const [webcamOn, setWebcamOn] = useState(true);
   const [selectedMic, setSelectedMic] = useState({ id: null });
@@ -47,7 +48,10 @@ const App = () => {
               meetingId,
               micEnabled: micOn,
               webcamEnabled: webcamOn,
-              name: participantName ? participantName : "TestUser",
+              name:
+                participantName && participantEmail
+                  ? `${participantName}/${participantEmail}`
+                  : "TestUser",
               mode: meetingMode,
               multiStream: false,
             }}
@@ -83,7 +87,9 @@ const App = () => {
       ) : (
         <JoiningScreen
           participantName={participantName}
+          participantEmail={participantEmail}
           setParticipantName={setParticipantName}
+          setParticipantEmail={setParticipantEmail}
           setMeetingId={setMeetingId}
           setToken={setToken}
           setMicOn={setMicOn}

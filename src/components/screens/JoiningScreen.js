@@ -14,7 +14,9 @@ import MicOnIcon from "../../icons/Bottombar/MicOnIcon";
 
 export function JoiningScreen({
   participantName,
+  participantEmail,
   setParticipantName,
+  setParticipantEmail,
   setMeetingId,
   setToken,
   setSelectedMic,
@@ -464,7 +466,9 @@ export function JoiningScreen({
                 <div className="flex flex-1 flex-col items-center justify-center xl:m-16 lg:m-6 md:mt-9 lg:mt-14 xl:mt-20 mt-3 md:absolute md:left-0 md:right-0 md:top-0 md:bottom-0">
                   <MeetingDetailsScreen
                     participantName={participantName}
+                    participantEmail={participantEmail}
                     setParticipantName={setParticipantName}
+                    setParticipantEmail={setParticipantEmail}
                     videoTrack={videoTrack}
                     setVideoTrack={setVideoTrack}
                     setMeetingMode={setMeetingMode}
@@ -486,7 +490,6 @@ export function JoiningScreen({
                           setVideoTrack(null);
                         }
                         onClickStartMeeting();
-                        setParticipantName("");
                       } else alert("Invalid Meeting Id");
                     }}
                     _handleOnCreateMeeting={async () => {
@@ -495,7 +498,6 @@ export function JoiningScreen({
                       sessionStorage.setItem("roomId", _meetingId);
                       setToken(token);
                       setMeetingId(_meetingId);
-                      setParticipantName("");
                       return _meetingId;
                     }}
                   />

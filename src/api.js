@@ -1,16 +1,16 @@
 const API_BASE_URL = "https://api.videosdk.live";
 const VIDEOSDK_TOKEN = process.env.REACT_APP_VIDEOSDK_TOKEN;
-const API_AUTH_URL = process.env.REACT_APP_AUTH_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export const getToken = async () => {
-	if (VIDEOSDK_TOKEN && API_AUTH_URL) {
+	if (VIDEOSDK_TOKEN && BACKEND_URL) {
 		console.error(
 			"Error: Provide only ONE PARAMETER - either Token or Auth API",
 		);
 	} else if (VIDEOSDK_TOKEN) {
 		return VIDEOSDK_TOKEN;
-	} else if (API_AUTH_URL) {
-		const res = await fetch(`${API_AUTH_URL}/get-token`, {
+	} else if (BACKEND_URL) {
+		const res = await fetch(`${BACKEND_URL}/get-token`, {
 			method: "GET",
 		});
 		const { token } = await res.json();
@@ -23,7 +23,7 @@ export const getToken = async () => {
 
 export const createMeeting = async ({ token }) => {
 	const url = `${API_BASE_URL}/v2/rooms`;
-	const webhookUrl = `https://webhook.site/93aa5450-738d-47d3-9ac8-3d64e7a0a485`;
+	const webhookUrl = `${BACKEND_URL}/trans/webhook`;
 	const options = {
 		method: "POST",
 		headers: { Authorization: token, "Content-Type": "application/json" },
@@ -37,7 +37,6 @@ export const createMeeting = async ({ token }) => {
 					"transcription-started",
 					"transcription-stopped",
 					"transcription-failed",
-					"transcription-completed",
 				],
 			},
 			autoStartConfig: {
