@@ -47,7 +47,7 @@ export const createMeeting = async ({ token }) => {
 						enabled: true,
 						summary: {
 							enabled: true,
-							prompt: `Generate a summary of the mental health session in SOAP format. In the Subjective section, include the client’s feelings, concerns, and key statements. In the Objective section, describe observable behaviors, mood, or physical symptoms. In the Assessment section, provide an evaluation of the client’s mental state and any significant patterns. In the Plan section, outline the next steps, recommendations, and goals for the client. Keep the notes concise and focused on the mental health context.`,
+							prompt: "Write summary in sections like Title, Agenda, Speakers, Action Items, Outlines, Notes and Summary",
 						},
 					},
 				},
